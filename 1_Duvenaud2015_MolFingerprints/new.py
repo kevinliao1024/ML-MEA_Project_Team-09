@@ -1,32 +1,3 @@
-# ============================================================
-# Final Optimized Neural Fingerprint Reproduction
-# ------------------------------------------------------------
-# Optimized specifically for ESOL small dataset
-#
-# Design Philosophy:
-# SMALL + STABLE + SUFFICIENT CAPACITY
-#
-# Compared with previous versions:
-#
-# KEEP:
-# + edge-aware message passing
-# + residual connection
-# + layer normalization
-# + improved atom/bond features
-# + smooth L1 loss
-# + gradient clipping
-# + early stopping
-#
-# REMOVE / REDUCE:
-# - excessive dropout
-# - overly deep predictor
-# - oversized fingerprint
-# - too deep message passing
-#
-# Target:
-# RMSE ≈ 0.58 ~ 0.64
-# ============================================================
-
 import random
 import numpy as np
 import pandas as pd
