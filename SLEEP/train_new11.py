@@ -24,7 +24,7 @@ from DeepConvNet import DeepConvNet
 # Focal Loss + Label Smoothing
 # =========================================================
 class FocalLoss(nn.Module):
-    def __init__(self, alpha=None, gamma=2.0, smoothing=0.08, reduction='mean'):
+    def __init__(self, alpha=None, gamma=2.0, smoothing=0.1, reduction='mean'):
         super(FocalLoss, self).__init__()
         self.alpha = alpha
         self.gamma = gamma
@@ -35,12 +35,14 @@ class FocalLoss(nn.Module):
         confidence = 1.0 - self.smoothing
         log_probs = F.log_softmax(inputs, dim=-1)
 
+        # 交叉熵部分
         nll_loss = -log_probs.gather(dim=-1, index=targets.unsqueeze(1))
         nll_loss = nll_loss.squeeze(1)
 
         smooth_loss = -log_probs.mean(dim=-1)
         ce_loss = confidence * nll_loss + self.smoothing * smooth_loss
 
+        # Focal 权重
         pt = torch.exp(-nll_loss)
 
         if self.alpha is not None:
@@ -75,7 +77,7 @@ def mixup_criterion(criterion, pred, y_a, y_b, lam):
 # =====================================================
 # 基础配置
 # =====================================================
-seed = 42
+seed = 2025 #3407
 random.seed(seed)
 np.random.seed(seed)
 torch.manual_seed(seed)
@@ -86,13 +88,13 @@ DATA_INFO_PATH = r"D:\course project\SLEEP\dataset_info.json"
 DATA_NAME = "SLEEP"
 INDEX_PATH_TRAIN = fr"D:\course project\{DATA_NAME}\train.h5"
 INDEX_PATH_VAL = fr"D:\course project\{DATA_NAME}\val.h5"
-MODEL_SAVE_PATH = "best_sleep_model_v7.pth"
+MODEL_SAVE_PATH = "best_sleep_model_v9.pth"  #v8
 
 device = torch.device("cpu")
 
 
 # =====================================================
-# 数据预处理
+# 数据预处理与增强
 # =====================================================
 def z_score_normalize(x):
     mean = x.mean(dim=-1, keepdim=True)
@@ -103,13 +105,15 @@ def z_score_normalize(x):
 with open(DATA_INFO_PATH, "r", encoding="utf-8") as f:
     info = json.load(f)
 
+category_list = info["dataset"]["category_list"]
 CHANNELS = len(info["dataset"]["channels"])
-CLASSES = len(info["dataset"]["category_list"])
+CLASSES = len(category_list)
 TIME_POINTS = int(info["processing"]["target_sampling_rate"] * info["processing"]["window_sec"])
 
+# 超参数
 BATCH_SIZE = 32
-EPOCHS = 140
-LR = 6e-4
+EPOCHS = 120
+LR = 8e-4
 
 # =====================================================
 # 数据加载
@@ -132,31 +136,20 @@ with h5py.File(INDEX_PATH_TRAIN, "r") as f:
     y_train = f["y"][()]
 
 weights = compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
-weights[1] = weights[1] * 1.80  # 保持 N1 优势，微调防止过度扩张
-weights[2] = weights[2] * 1.60  # 继续强化 N2
-weights[3] = weights[3] * 0.75  # 压制 N3，释放边界样本给 N2
-weights[4] = weights[4] * 1.35  # 重点 REM
+weights[1] = weights[1] * 1.62  # 强化 N1
+weights[2] = weights[2] * 1.25  # 维持 N2
 weights = torch.tensor(weights, dtype=torch.float32).to(device)
 
 model = DeepConvNet(chans=CHANNELS, time_point=TIME_POINTS, nb_classes=CLASSES, dropoutRate=0.5).to(device)
-criterion = FocalLoss(alpha=weights, gamma=2.0, smoothing=0.08)
+criterion = FocalLoss(alpha=weights, gamma=2.0, smoothing=0.1)
 optimizer = torch.optim.AdamW(model.parameters(), lr=LR, weight_decay=1e-3)
-
-
-def lr_lambda(current_step):
-    warmup_steps = 5
-    if current_step < warmup_steps:
-        return float(current_step) / float(max(1, warmup_steps))
-    return 0.5 * (1.0 + np.cos(np.pi * (current_step - warmup_steps) / (EPOCHS - warmup_steps)))
-
-
-scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS)
 
 # =====================================================
 # 训练循环
 # =====================================================
 best_val_acc = 0.0
-patience = 40
+patience = 30
 trigger = 0
 train_losses, val_accuracies, val_f1s, val_kappas = [], [], [], []
 
@@ -169,6 +162,7 @@ for epoch in range(EPOCHS):
         data, label = data.to(device), label.to(device)
         data = z_score_normalize(data)
 
+        # Mixup 逻辑，稍微减弱 alpha 以保护细微特征
         if np.random.random() > 0.4:
             inputs, targets_a, targets_b, lam = mixup_data(data, label, alpha=0.2)
             outputs = model(inputs)
@@ -187,6 +181,7 @@ for epoch in range(EPOCHS):
 
     scheduler.step()
 
+    # 验证
     model.eval()
     all_preds, all_labels = [], []
     with torch.no_grad():
@@ -235,6 +230,7 @@ with torch.no_grad():
         all_preds.extend(torch.argmax(ex_output, dim=1).cpu().numpy())
         all_labels.extend(ex_label.cpu().numpy())
 
+# 生理平滑后处理
 all_preds = median_filter(np.array(all_preds), size=3)
 
 final_acc = accuracy_score(all_labels, all_preds)
