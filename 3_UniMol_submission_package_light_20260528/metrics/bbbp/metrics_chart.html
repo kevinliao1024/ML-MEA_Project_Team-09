@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uni-Mol bbbp — Metrics</title>
+<style>
+ *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+        background:#f5f6fa;padding:2rem;color:#2c2c2c}
+  .card{background:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1rem;
+         border:0.5px solid rgba(0,0,0,0.08);max-width:800px;margin:0 auto 1rem}
+  h1{font-size:1.1rem;font-weight:600;margin-bottom:0.25rem}
+  .subtitle{font-size:0.8rem;color:#888}
+  .chart-wrap{position:relative;height:340px}
+  .warn{font-size:0.85rem;color:#888;margin-top:0.5rem}
+  .badge{display:inline-block;padding:0.15rem 0.6rem;border-radius:20px;
+          font-size:0.75rem;font-weight:500;margin-right:0.5rem;margin-bottom:0.3rem}
+  .badge-good{background:#e6f4ea;color:#276221}
+  .badge-ok{background:#fff3e0;color:#7d3c00}
+  .badge-low{background:#fce8e6;color:#9c1919}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Uni-Mol · bbbp</h1>
+  <div class="subtitle">5-Fold Cross-Validation · 5折交叉验证</div>
+</div>
+<div class="card">
+  <div class="chart-wrap">
+    <canvas id="chart" role="img" aria-label="Metrics chart"></canvas>
+  </div>
+</div>
+<div class="card">
+  <div style="font-size:0.85rem;color:#666;margin-bottom:0.6rem">数值速览</div>
+  <div>
+    <span class="badge badge-good">auc: 0.8985</span>
+    <span class="badge badge-good">auroc: 0.8985</span>
+    <span class="badge badge-good">auprc: 0.9737</span>
+    <span class="badge badge-low">log_loss: 0.3676</span>
+    <span class="badge badge-good">acc: 0.9056</span>
+    <span class="badge badge-good">f1_score: 0.9452</span>
+    <span class="badge badge-ok">mcc: 0.6166</span>
+    <span class="badge badge-good">precision: 0.9216</span>
+    <span class="badge badge-good">recall: 0.9701</span>
+    <span class="badge badge-ok">cohen_kappa: 0.6061</span>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+new Chart(document.getElementById('chart'), {
+  type: 'bar',
+  data: {
+    labels: ['auc', 'auroc', 'auprc', 'log_loss', 'acc', 'f1_score', 'mcc', 'precision', 'recall', 'cohen_kappa'],
+    datasets: [{
+      label: 'Score',
+      data: ['0.8985', '0.8985', '0.9737', '0.3676', '0.9056', '0.9452', '0.6166', '0.9216', '0.9701', '0.6061'],
+      backgroundColor: ['#378ADD', '#D85A30', '#1D9E75', '#7F77DD', '#BA7517', '#ED93B1', '#639922', '#888780', '#F09595', '#AFA9EC'],
+      borderRadius: 5,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { min: 0, max: 1, grid: { color: 'rgba(0,0,0,0.05)' } },
+      y: { grid: { display: false } }
+    },
+    plugins: { legend: { display: false } }
+  }
+});
+</script>
+</body>
+</html>

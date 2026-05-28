@@ -1,0 +1,51 @@
+task,evaluation,metric,value,source_file,note
+esol,5fold_cv,mse,0.4309,metrics/esol/metrics_chart.html,Uni-Mol Tools 5-fold CV
+esol,5fold_cv,mae,0.4692,metrics/esol/metrics_chart.html,Uni-Mol Tools 5-fold CV
+esol,5fold_cv,pearsonr,0.9487,metrics/esol/metrics_chart.html,Uni-Mol Tools 5-fold CV
+esol,5fold_cv,spearmanr,0.9470,metrics/esol/metrics_chart.html,Uni-Mol Tools 5-fold CV
+esol,5fold_cv,r2,0.8992,metrics/esol/metrics_chart.html,Uni-Mol Tools 5-fold CV
+esol,test,mse,0.7995258519707026,predictions/esol/test_predictions/test_metric.json,Official test split prediction metric
+esol,test,mae,0.6675327110543714,predictions/esol/test_predictions/test_metric.json,Official test split prediction metric
+esol,test,pearsonr,0.9100537161924249,predictions/esol/test_predictions/test_metric.json,Official test split prediction metric
+esol,test,spearmanr,0.9029459711224967,predictions/esol/test_predictions/test_metric.json,Official test split prediction metric
+esol,test,r2,0.8220447873743318,predictions/esol/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,5fold_cv,auc,0.8985,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,5fold_cv,auroc,0.8985,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,5fold_cv,auprc,0.9737,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,5fold_cv,log_loss,0.3676,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,5fold_cv,acc,0.9056,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,5fold_cv,f1_score,0.9452,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,5fold_cv,mcc,0.6166,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,5fold_cv,precision,0.9216,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,5fold_cv,recall,0.9701,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,5fold_cv,cohen_kappa,0.6061,metrics/bbbp/metrics_chart.html,Uni-Mol Tools 5-fold CV
+bbbp,test,auc,0.6741898148148147,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,test,auroc,0.6741898148148147,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,test,auprc,0.6881852659562654,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,test,log_loss,1.8642176535920292,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,test,acc,0.5833333333333334,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,test,f1_score,0.6816479400749064,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,test,mcc,0.1616169557187784,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,test,precision,0.5723270440251572,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,test,recall,0.8425925925925926,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+bbbp,test,cohen_kappa,0.1383422778771617,predictions/bbbp/test_predictions/test_metric.json,Official test split prediction metric
+tox21,5fold_cv,auc,0.6475,metrics/tox21_metrics_chart.html,Uni-Mol Tools 5-fold CV
+tox21,5fold_cv,auroc,0.6475,metrics/tox21_metrics_chart.html,Uni-Mol Tools 5-fold CV
+tox21,5fold_cv,auprc,0.2377,metrics/tox21_metrics_chart.html,Uni-Mol Tools 5-fold CV
+tox21,5fold_cv,log_loss,0.4888,metrics/tox21_metrics_chart.html,Uni-Mol Tools 5-fold CV
+tox21,5fold_cv,acc,0.9624,metrics/tox21_metrics_chart.html,Uni-Mol Tools 5-fold CV
+tox21,5fold_cv,mcc,0.3306,metrics/tox21_metrics_chart.html,Uni-Mol Tools 5-fold CV
+tox21,test,auc,0.7859494004657863,predictions/tox21/test_predictions/test_metric.json,Official test split prediction metric
+tox21,test,auroc,0.7859494004657863,predictions/tox21/test_predictions/test_metric.json,Official test split prediction metric
+tox21,test,auprc,0.44166790576647985,predictions/tox21/test_predictions/test_metric.json,Official test split prediction metric
+tox21,test,log_loss,0.33102437731763573,predictions/tox21/test_predictions/test_metric.json,Official test split prediction metric
+tox21,test,acc,0.9139871246737149,predictions/tox21/test_predictions/test_metric.json,Official test split prediction metric
+tox21,test,mcc,0.3733563359015644,predictions/tox21/test_predictions/test_metric.json,Official test split prediction metric
+qm9dft,5fold_cv,mae,0.0024,metrics/qm9dft_metrics_chart.html,Uni-Mol Tools 5-fold CV
+qm9dft,5fold_cv,pearsonr,0.9804,metrics/qm9dft_metrics_chart.html,Uni-Mol Tools 5-fold CV
+qm9dft,5fold_cv,spearmanr,0.9788,metrics/qm9dft_metrics_chart.html,Uni-Mol Tools 5-fold CV
+qm9dft,5fold_cv,mse,0.0000,metrics/qm9dft_metrics_chart.html,Uni-Mol Tools 5-fold CV
+qm9dft,5fold_cv,r2,0.9605,metrics/qm9dft_metrics_chart.html,Uni-Mol Tools 5-fold CV
+qm9dft,test,mae,0.004772608828735376,predictions/qm9dft/test_predictions/test_metric.json,Official test split prediction metric
+qm9dft,test,mse,0.00007971047895740493,predictions/qm9dft/test_predictions/test_metric.json,Official test split prediction metric
+qm9dft,test,r2,0.9410603046678734,predictions/qm9dft/test_predictions/test_metric.json,Official test split prediction metric

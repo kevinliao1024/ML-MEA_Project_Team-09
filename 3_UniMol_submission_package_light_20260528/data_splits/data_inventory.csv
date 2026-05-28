@@ -1,0 +1,13 @@
+task,split,rows,columns
+bbbp,train,1631,"SMILES,TARGET"
+bbbp,valid,204,"SMILES,TARGET"
+bbbp,test,204,"SMILES,TARGET"
+esol,train,902,"SMILES,TARGET"
+esol,valid,113,"SMILES,TARGET"
+esol,test,113,"SMILES,TARGET"
+qm9dft,train,107108,"SMILES,homo,lumo,gap"
+qm9dft,valid,13388,"SMILES,homo,lumo,gap"
+qm9dft,test,13389,"SMILES,homo,lumo,gap"
+tox21,train,6257,"SMILES,NR-AR,NR-AR-LBD,NR-AhR,NR-Aromatase,NR-ER,NR-ER-LBD,NR-PPAR-gamma,SR-ARE,SR-ATAD5,SR-HSE,SR-MMP,SR-p53"
+tox21,valid,783,"SMILES,NR-AR,NR-AR-LBD,NR-AhR,NR-Aromatase,NR-ER,NR-ER-LBD,NR-PPAR-gamma,SR-ARE,SR-ATAD5,SR-HSE,SR-MMP,SR-p53"
+tox21,test,783,"SMILES,NR-AR,NR-AR-LBD,NR-AhR,NR-Aromatase,NR-ER,NR-ER-LBD,NR-PPAR-gamma,SR-ARE,SR-ATAD5,SR-HSE,SR-MMP,SR-p53"

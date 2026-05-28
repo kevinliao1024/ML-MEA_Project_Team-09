@@ -1,0 +1,19 @@
+﻿# Heavy experiment artifacts
+checkpoints/
+*.pth
+*.pt
+*.ckpt
+*.sdf
+*.lmdb
+*.tar.gz
+*.zip
+cv.data
+test.predict.*.csv
+molecular_property_prediction*/
+
+# Python/cache
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uni-Mol esol — Metrics</title>
+<style>
+ *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+        background:#f5f6fa;padding:2rem;color:#2c2c2c}
+  .card{background:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1rem;
+         border:0.5px solid rgba(0,0,0,0.08);max-width:800px;margin:0 auto 1rem}
+  h1{font-size:1.1rem;font-weight:600;margin-bottom:0.25rem}
+  .subtitle{font-size:0.8rem;color:#888}
+  .chart-wrap{position:relative;height:340px}
+  .warn{font-size:0.85rem;color:#888;margin-top:0.5rem}
+  .badge{display:inline-block;padding:0.15rem 0.6rem;border-radius:20px;
+          font-size:0.75rem;font-weight:500;margin-right:0.5rem;margin-bottom:0.3rem}
+  .badge-good{background:#e6f4ea;color:#276221}
+  .badge-ok{background:#fff3e0;color:#7d3c00}
+  .badge-low{background:#fce8e6;color:#9c1919}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Uni-Mol · esol</h1>
+  <div class="subtitle">5-Fold Cross-Validation · 5折交叉验证</div>
+</div>
+<div class="card">
+  <div class="chart-wrap">
+    <canvas id="chart" role="img" aria-label="Metrics chart"></canvas>
+  </div>
+</div>
+<div class="card">
+  <div style="font-size:0.85rem;color:#666;margin-bottom:0.6rem">数值速览</div>
+  <div>
+    <span class="badge badge-low">mse: 0.4309</span>
+    <span class="badge badge-low">mae: 0.4692</span>
+    <span class="badge badge-good">pearsonr: 0.9487</span>
+    <span class="badge badge-good">spearmanr: 0.9470</span>
+    <span class="badge badge-good">r2: 0.8992</span>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+new Chart(document.getElementById('chart'), {
+  type: 'bar',
+  data: {
+    labels: ['mse', 'mae', 'pearsonr', 'spearmanr', 'r2'],
+    datasets: [{
+      label: 'Score',
+      data: ['0.4309', '0.4692', '0.9487', '0.9470', '0.8992'],
+      backgroundColor: ['#378ADD', '#D85A30', '#1D9E75', '#7F77DD', '#BA7517'],
+      borderRadius: 5,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { min: 0, max: 1, grid: { color: 'rgba(0,0,0,0.05)' } },
+      y: { grid: { display: false } }
+    },
+    plugins: { legend: { display: false } }
+  }
+});
+</script>
+</body>
+</html>
