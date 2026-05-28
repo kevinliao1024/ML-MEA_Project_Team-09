@@ -278,7 +278,7 @@ def train_model():
     BATCH_SIZE_SIMULATED = 100
 
     for fold, (train_idx, test_idx) in enumerate(kf.split(range(len(dataset)))):
-        print(f"\n========== 正在执行第 {fold + 1} 折验证 ==========")
+        print(f"\n 正在执行第 {fold + 1} 折验证")
 
         train_loader = DataLoader(Subset(dataset, train_idx), batch_size=1, shuffle=True)
         test_loader = DataLoader(Subset(dataset, test_idx), batch_size=1, shuffle=False)
@@ -302,7 +302,7 @@ def train_model():
             optimizer.load_state_dict(ckpt["optimizer_state_dict"])
             minibatch_count = ckpt["minibatch_count"]
             print(
-                f"-> 成功触发断点续训！从小组实验 [{experiment_name}] 第 {fold + 1} 折的第 {minibatch_count} 个 Minibatch 开始...")
+                f"触发断点续训！从小组实验 [{experiment_name}] 第 {fold + 1} 折的第 {minibatch_count} 个 Minibatch 开始...")
         else:
             minibatch_count = 0
 
@@ -372,15 +372,12 @@ def train_model():
         }, final_checkpoint_path)
         print(f"成功保存该折最终模型: {final_checkpoint_path}")
 
-    print("\n===================================")
-    print("    5折交叉验证统计最终学术报告      ")
-    print("===================================")
+    print("\n5折交叉验证统计报告")
     for i, rmse in enumerate(fold_results):
         print(f"折数 {i + 1}: {rmse:.4f}")
-    print("\n===================================")
-    print(f"Mean RMSE: {np.mean(fold_results):.4f}")
+
+    print(f"\nMean RMSE: {np.mean(fold_results):.4f}")
     print(f"Std RMSE : {np.std(fold_results):.4f}")
-    print("===================================")
 
 
 if __name__ == "__main__":

@@ -271,7 +271,7 @@ def train_model():
     BATCH_SIZE_SIMULATED = 100
 
     for fold, (train_idx, test_idx) in enumerate(kf.split(range(len(dataset)))):
-        print(f"\n========== 正在执行第 {fold + 1} 折验证 ==========")
+        print(f"\n 正在执行第 {fold + 1} 折验证 ")
 
         train_loader = DataLoader(Subset(dataset, train_idx), batch_size=1, shuffle=True)
         test_loader = DataLoader(Subset(dataset, test_idx), batch_size=1, shuffle=False)
@@ -332,15 +332,12 @@ def train_model():
         fold_results.append(final_test_rmse)
         print(f"\n第 {fold + 1} 折严格步数训练结束，验证集最终 RMSE: {final_test_rmse:.4f}")
 
-    print("\n===================================")
-    print("    5折交叉验证统计最终学术报告      ")
-    print("===================================")
+    print("\n5折交叉验证统计报告")
     for i, rmse in enumerate(fold_results):
         print(f"折数 {i + 1}: {rmse:.4f}")
-    print("\n===================================")
-    print(f"Mean RMSE: {np.mean(fold_results):.4f}")
+
+    print(f"\nMean RMSE: {np.mean(fold_results):.4f}")
     print(f"Std RMSE : {np.std(fold_results):.4f}")
-    print("===================================")
 
 
 if __name__ == "__main__":
