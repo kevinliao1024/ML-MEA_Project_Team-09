@@ -307,7 +307,15 @@ def train_model():
             minibatch_count = ckpt["minibatch_count"]
             if "best_test_rmse" in ckpt:
                 best_test_rmse = ckpt["best_test_rmse"]
-            print(f" 触发断点续训！从第 {fold + 1} 折的第 {minibatch_count} 个 Minibatch 开始...")
+
+            # 修复：确保从老权重文件里读取出来的模型和优化器，彻底对齐当前设备的本地网络
+            model = model.to(device)
+            for state in optimizer.state.values():
+                for k, v in state.items():
+                    if isinstance(v, torch.Tensor):
+                        state[k] = v.to(device)
+
+            print(f"触发断点续训！从第 {fold + 1} 折的第 {minibatch_count} 个 Minibatch 开始...")
         else:
             minibatch_count = 0
 
