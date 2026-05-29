@@ -1,42 +1,23 @@
-一、代码架构与设计核心 (new4.py)
-本模块的代码严格对齐原论文的理论公式，采用模块化设计，核心逻辑如下：
+Neural-Fingerprint-PyTorch本仓库提供了对 2015 年 NIPS 经典论文 《Convolutional Networks on Graphs for Learning Molecular Fingerprints》 的复现。
 
-1. 精细化分子特征工程 (Atom and Bond Features)
-原子特征 (get_atom_features)：提取 28维 节点特征，包含原子类型 One-hot（10维）、连接度 One-hot（6维）、隐式氢原子数 One-hot（5维）、隐式价 One-hot（6维）及芳香性 Indicator（1维）。
+本项目在化学特征提取空间（Feature Space）、可变度权重选择（Degree-specific Weights）以及平滑消息传递机制（Message Passing & Pooling）上，均与哈佛大学 HIPS 实验室官方开源代码（基于 Autograd）及原论文 Algorithm 1 实现了对齐。同时，内置了针对 ESOL（Delaney）数据集的 5 折交叉验证（5-Fold Cross-Validation）标准评估管线。
 
-化学键特征 (get_bond_features)：提取 6维 边特征，包含键类型 One-hot（4维）、是否共轭（1维）以及是否在环中（1维）。
+核心对齐特性 (Alignment Checklist)：
+严格闭环了原论文的核心设计：真实化学特征空间对齐：完整补全了基准特征中缺失的 B（硼）和 H（氢）原子，原子特征空间精确映射为 31 维，边特征精确映射为 6 维，彻底避免了化学信息截断。
+可变度权重（Degree-specific Weights）：严格复现了原论文为不同连接度（0~5）的原子分配独立权重矩阵的设计，用于捕捉不同的局部几何拓扑。
+平滑激活与全局无偏累加：隐藏层严格采用原论文指定的 Sigmoid 平滑激活函数。每层指纹更新均通过 Softmax 进行局部特征分布化，随后通过原子级 .sum(dim=0) 无偏累加至全局分子指纹向量中。
+精确梯度累加（Batch 仿真）：利用微批次（Mini-batch）梯度累加技术，在单分子图输入架构下，数学等价地实现了原论文要求的 batch_size = 100 联合优化。
 
-2. 图结构构建 (smiles_to_graph)
-利用 RDKit 解析标准 SMILES 字符串，将其转化为无向图结构，自动输出包含 x（节点特征矩阵）、edge_index（稀疏邻接矩阵）、edge_attr（边特征矩阵）和 degrees（原子度）的分子图字典。
+说明：
+1. 环境依赖 PyTorch 和化学信息学核心库 RDKit。
+2. 数据准备下载经典 ESOL 溶解度数据集 delaney-processed.csv。打开 main.py，将 train_model() 函数中的数据集路径修改为你本地的实际存放路径：Pythondataset = ESOLDataset(r"YOUR_PATH_TO/delaney-processed.csv")
+3. 运行严格训练管线执行以下命令启动 5 折交叉验证，训练过程中会自动打印每折的 Train/Test RMSE，并保存最优 Checkpoint：Bashpython main.py
 
-3. 数据集与标签归一化 (ESOLDataset)
-采用经典的分子水溶性评估数据集 ESOL (Delaney)。
+核心算法数学映射：
+邻域消息聚合 (Neighborhood Aggregation)论文公式：$a_v = x_v + \sum_{w \in N(v)} \text{concat}(x_w, e_{vw})$代码实现：Pythonneighbor_msg = torch.cat([x[col], edge_attr], dim=-1)
+agg.index_add_(0, row, neighbor_msg)
+v = torch.cat([x, zeros], dim=-1) + agg
+(注：通过对中心原子拼接垫零 zeros，在数学结果完全等价的前提下，优雅地解决了 PyTorch 维度对齐的工程痛点)指纹更新与池化 (Fingerprint Update & Pooling)论文公式：$r \leftarrow r + \sum_{v} \text{softmax}(x_v H_l)$代码实现：Pythonlayer_fp = torch.softmax(self.fp_layers[l](x), dim=-1)
+final_fp = final_fp + layer_fp.sum(dim=0)
 
-自动对目标标签进行 Z-Score 标准化（均值/标准差校准），确保回归任务的梯度平稳收敛。
-
-4. Neural Fingerprint 核心架构 (NeuralFingerprint)
-按度独立聚合 (Degree-Specific Weights)：严格遵循原论文设计，由于不同连接度的原子局部拓扑结构差异巨大，模型根据原子的度（0-5）分别路由到 6 组完全独立的线性权重矩阵（h_weights）中进行特征变换。
-
-全局指纹平滑更新：层级节点特征通过 ReLU 激活后，经由独立的指纹发射层映射到全局空间，利用 Softmax 实现局部特征的平滑过渡，并在分子全图上执行加和（sum）汇聚，最终生成 512维 的全局分子指纹向量。
-
-5. 训练与评测机制
-大批次梯度累加模拟：为精准复现原论文“10,000 个 Minibatch，每个 Minibatch 包含 100 个分子”的设定，同时规避分子图大小不一导致的复杂 Padding 降效，代码采用单分子前向传播 + 梯度累加（累加至 100 个分子时触发 optimizer.step()）的精细控制机制。
-
-5折交叉验证 (5-Fold Cross-Validation)：内置严格的 KFold 划分（固定随机种子 42），杜绝数据泄露与过拟合，并在训练结束后自动打印包含均值（Mean RMSE）与标准差（Std RMSE）的最终学术报告。
-
-二、启动与运行指南
-下载 ESOL 数据集文件 delaney-processed.csv。
-
-打开 new4.py 文件，将 train_model() 函数中的数据集路径修改为你的本地路径：
-
-Python
-
-
-dataset = ESOLDataset(r"你的本地路径/delaney-processed.csv")
-在终端中直接运行复现脚本：
-
-Bash
-
-
-python new4.py
-系统将依次执行 5 折验证，并每隔 500 步打印一次当前 Fold 的训练集与测试集 RMSE 指标。
+实验配置：predictor_type='linear'：将生成的神经分子指纹直接送入单层线性回归器。predictor_type='neural_net'：后接双层全连接网络（含有 ReLU 激活），对应论文中的标准端到端回归预测器。超参数规范（完全对齐原论文）：优化器：RMSprop基础学习率 (LR)：8e-4L2 正则化 (Weight Decay)：1e-4梯度裁剪 (Grad Norm)：5.0总迭代 Mini-batches：10,000
